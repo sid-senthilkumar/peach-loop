@@ -1,0 +1,112 @@
+# Phase 2 sweep configuration.
+# Default sweep dimension: preprocessing pipeline (AGENTS.md §4.1).
+# The human may override at CP1; this file is the default.
+
+phase: 2
+
+sweep_dimension: preprocessing  # frozen default; human can override at CP1
+
+# Seeds for stability metric (Jaccard similarity across seeds per variant)
+seeds: [42, 123, 7]  # 3 seeds per variant as required by AGENTS.md §4
+
+wall_clock_cap_hours: 48         # total Phase 2 budget
+per_variant_cap_hours: 2         # per variant
+per_seed_cap_minutes: 45         # per seed within a variant
+
+# Preprocessing variants (AGENTS.md §4.1)
+variants:
+
+  - name: raw_counts
+    description: "Raw counts — no normalization, no log transform"
+    preprocessing:
+      filter_cells_min_genes: 200
+      filter_genes_min_cells: 3
+      normalize_total_target: null   # skip
+      log_transform: false
+      n_highly_variable_genes: null  # skip HVG
+      scale: false
+      pca_components: 50
+
+  - name: log_normalized_only
+    description: "Log-normalized, no HVG selection, no scaling"
+    preprocessing:
+      filter_cells_min_genes: 200
+      filter_genes_min_cells: 3
+      normalize_total_target: 10000
+      log_transform: true
+      n_highly_variable_genes: null  # skip
+      scale: false
+      pca_components: 50
+
+  - name: log_norm_hvg1000
+    description: "Log-normalized + HVG selection at 1000 genes"
+    preprocessing:
+      filter_cells_min_genes: 200
+      filter_genes_min_cells: 3
+      normalize_total_target: 10000
+      log_transform: true
+      n_highly_variable_genes: 1000
+      scale: false
+      pca_components: 50
+
+  - name: log_norm_hvg2000
+    description: "Log-normalized + HVG selection at 2000 genes (Phase 1 reference — no scaling)"
+    preprocessing:
+      filter_cells_min_genes: 200
+      filter_genes_min_cells: 3
+      normalize_total_target: 10000
+      log_transform: true
+      n_highly_variable_genes: 2000
+      scale: false
+      pca_components: 50
+
+  - name: log_norm_hvg4000
+    description: "Log-normalized + HVG selection at 4000 genes"
+    preprocessing:
+      filter_cells_min_genes: 200
+      filter_genes_min_cells: 3
+      normalize_total_target: 10000
+      log_transform: true
+      n_highly_variable_genes: 4000
+      scale: false
+      pca_components: 50
+
+  - name: log_norm_hvg2000_scaled
+    description: "Log-normalized + HVG (2000) + scaling — exact Phase 1 reference"
+    preprocessing:
+      filter_cells_min_genes: 200
+      filter_genes_min_cells: 3
+      normalize_total_target: 10000
+      log_transform: true
+      n_highly_variable_genes: 2000
+      scale: true
+      pca_components: 50
+
+  # Batch correction variant: PBMC 3K has no batch annotation.
+  # Substituting log-norm + HVG (2000) + highly-variable selection with flavor='seurat_v3'.
+  - name: log_norm_hvg2000_seurat_v3
+    description: "Log-normalized + HVG (2000) with Seurat v3 selection (variance-stabilized)"
+    preprocessing:
+      filter_cells_min_genes: 200
+      filter_genes_min_cells: 3
+      normalize_total_target: 10000
+      log_transform: true
+      n_highly_variable_genes: 2000
+      hvg_flavor: seurat_v3        # scanpy pp.highly_variable_genes flavor parameter
+      scale: false
+      pca_components: 50
+
+# PEACH hyperparameters held fixed at Phase 1 values across all variants
+peach:
+  n_epochs: 150
+  device: auto
+  random_seed: null   # overridden per-seed in sweep loop
+
+# Archetype assignment threshold (held at Phase 1 value)
+enrichment:
+  archetype_assignment_pct: 0.15
+
+# Comparison report settings
+comparison:
+  top_k_cells_for_jaccard: 50    # top-k archetype-assigned cells for stability metric
+  top_archetypes_for_enrichment: 3  # top N archetypes shown in comparison table

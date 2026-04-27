@@ -1,0 +1,68 @@
+# Phase 1 configuration: single baseline run on PBMC 3K.
+# Overrides/extends configs/base.yaml.
+
+phase: 1
+
+dataset:
+  name: pbmc3k
+  # Primary source: scanpy ships a download helper.
+  # Fallback: 10x Genomics public URL.
+  source: scanpy
+  fallback_url: "https://cf.10xgenomics.com/samples/cell-exp/1.1.0/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz"
+  # SHA-256 is recorded after first successful download (see dataset.py).
+  # Leave null here; the pipeline fills it in.
+  sha256: null
+
+preprocessing:
+  # Standard scanpy PBMC tutorial pipeline — AGENTS.md §3.3
+  filter_cells_min_genes: 200
+  filter_genes_min_cells: 3
+  normalize_total_target: 10000     # normalize to 10k counts per cell
+  log_transform: true               # log1p
+  n_highly_variable_genes: 2000    # top HVGs
+  scale: true                       # z-score per gene, max_value=10
+  pca_components: 50               # PCA input to PEACH
+
+peach:
+  # null = run hyperparameter_search first; integer = skip search
+  n_archetypes: null
+
+  hyperparameter_search:
+    n_archetypes_range: [3, 4, 5, 6, 7, 8]
+    cv_folds: 3
+    max_epochs_cv: 15
+    # Wall-clock cap for the search.  If exceeded, fall back to n_archetypes_fallback.
+    wall_clock_cap_minutes: 30
+    fallback_n_archetypes: 5
+
+  n_epochs: 150
+  # "auto" = try cuda, then mps, then cpu.
+  # Fallback to cpu on any MPS instability per PEACH README.
+  device: auto
+
+  # Fraction of cells held out for evaluation (stratified by archetype assignment)
+  train_test_split: 0.8
+  random_seed: 42
+
+enrichment:
+  gene_associations:
+    fdr_scope: global
+    min_logfc: 0.1
+  pathway_associations:
+    fdr_scope: global
+  archetype_assignment_pct: 0.15  # top 15% cells per archetype for assignment
+
+acceptance:
+  # Hard criteria — go/no-go at CP1
+  archetype_r2_min: 0.7
+  # Soft criteria — flagged in report, not fail
+  gene_set_fdr_threshold: 0.05
+  gene_set_per_archetype_min: 3
+  # Known PBMC immune markers for sanity check (soft)
+  known_markers:
+    T_cell: [CD3D, CD3E, CD3G]
+    B_cell: [CD79A, CD79B, MS4A1]
+    Monocyte: [CD14, LYZ, CST3]
+    NK_cell: [NKG7, GNLY, KLRD1]
+
+wall_clock_cap_hours: 4
