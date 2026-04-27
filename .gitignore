@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# uv
+.uv/
+
+# Data (large files – track only structure, not content)
+data/raw/*.h5
+data/raw/*.h5ad
+data/raw/*.tar.gz
+data/raw/*.zip
+data/processed/*.h5ad
+
+# Checkpoints (keep metadata, not the large binaries)
+checkpoints/*.h5ad
+checkpoints/*.pt
+
+# Logs (keep structure, not content – logs are written at runtime)
+# DO NOT add logs/*.jsonl here — logs are precious
+
+# Reports (generated at runtime)
+# Keep tracked so outputs can be reviewed via git
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Temp
+*.tmp
+*.bak

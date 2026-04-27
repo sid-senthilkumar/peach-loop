@@ -1,0 +1,57 @@
+[project]
+name = "peach-loop"
+version = "0.1.0"
+description = "Autonomous training loop for PEACH archetypal analysis on scRNA-seq data"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    # PEACH installed from source — the core model library
+    "peach",
+    # Single-cell analysis stack
+    "scanpy>=1.9",
+    "anndata>=0.8",
+    "leidenalg",
+    "python-igraph",
+    # Deep learning
+    "torch>=2.0",
+    # Enrichment (PEACH uses MSigDB via gseapy internally; we reference it directly too)
+    "gseapy>=1.0",
+    # Plotting
+    "matplotlib>=3.7",
+    "seaborn>=0.12",
+    "plotly>=5.0",
+    "kaleido",          # plotly static export
+    # Config and utilities
+    "pyyaml>=6.0",
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scipy>=1.10",
+]
+
+[project.optional-dependencies]
+cellrank = [
+    # CellRank is a PEACH dependency for trajectory integration.
+    # We don't use it directly; install if needed for full PEACH feature set.
+    "cellrank>=2.0",
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-timeout>=0.5",
+]
+
+[tool.uv.sources]
+# Install PEACH directly from the canonical GitHub source.
+# Pin to a commit hash once a stable version is confirmed at runtime.
+peach = { git = "https://github.com/xhonkala/PEACH.git" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/peach_loop"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+timeout = 300
+addopts = "-v"
