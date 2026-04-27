@@ -202,7 +202,7 @@ Three for orientation, rest if curious.
 
 **My time budget:** ~3 hours of focused attention spread across the project. Three checkpoints (~30-60 min each). Reading the daily digest (~5 min/day during active phases — probably 2-3 weeks total).
 
-**Agent on Spark:** unspecified at scaffolding time. Could be Claude Code in agent mode, could be Hermes Agent, could be something else current at execution time. AGENTS.md is written agent-agnostic.
+**Agent on Spark:** unspecified at scaffolding time. Could be Claude Code in agent mode or something else with comparable capabilities at execution time. AGENTS.md is written agent-agnostic.
 
 **Pace:** Phase 1 is an afternoon. Phase 2 is a few days of background runs. Phase 3 is a long weekend. Total wall-clock 1-2 weeks if I'm not waiting on anything; longer if batching checkpoints across busier weeks.
 

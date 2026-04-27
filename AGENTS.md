@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Specification for an autonomous agent running this project on a remote compute machine. Written to be agent-agnostic — works for Claude Code in agent mode, Hermes Agent, or anything else with comparable capabilities at execution time.
+Specification for an autonomous agent running this project on a remote compute machine. Written to be agent-agnostic — works for Claude Code in agent mode or anything else with comparable capabilities at execution time.
 
 This document specifies *what* must happen and the rules under which it must happen. It does not specify how to organize code, which packages to use, or what file formats to choose — those are agent-side decisions.
 
